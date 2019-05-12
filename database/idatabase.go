@@ -1,7 +1,7 @@
 package database
 
 import (
-	"github.com/filario/watering-server/schedule"
+	"github.com/FrancescoIlario/Watering-Server/schedule"
 )
 
 type IDbSchedule interface {

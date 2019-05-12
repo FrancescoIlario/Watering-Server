@@ -1,8 +1,8 @@
 package database
 
 import (
-	"github.com/filario/watering-server/schedule"
-	"github.com/filario/watering-server/utils"
+	"github.com/FrancescoIlario/Watering-Server/schedule"
+	"github.com/FrancescoIlario/Watering-Server/utils"
 	"github.com/gocql/gocql"
 	"github.com/scylladb/gocqlx"
 	"github.com/scylladb/gocqlx/qb"

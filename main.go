@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/filario/watering-server/database"
-	"github.com/filario/watering-server/rest-api/schedule-rest"
-	"github.com/filario/watering-server/schedule"
-	"github.com/filario/watering-server/utils"
+	"github.com/FrancescoIlario/Watering-Server/database"
+	"github.com/FrancescoIlario/Watering-Server/rest-api/schedule-rest"
+	"github.com/FrancescoIlario/Watering-Server/schedule"
+	"github.com/FrancescoIlario/Watering-Server/utils"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/render"
@@ -28,9 +28,21 @@ func Routes() *chi.Mux {
 			_, err := resp.Write([]byte("Hello"))
 			utils.PanicIf(err)
 		})
-
+		r.Get("/echo", Echo)
 	})
 	return router
+}
+
+func Echo(w http.ResponseWriter, r *http.Request) {
+	var body []byte
+
+	_, err := r.Body.Read(body)
+	utils.PanicIf(err)
+
+	_, err = w.Write(body)
+	utils.PanicIf(err)
+
+	w.WriteHeader(201)
 }
 
 func Hello(resp http.ResponseWriter, _ *http.Request) {
@@ -69,7 +81,7 @@ func testDb() {
 		startDuration := now.Add(slack).Sub(startOfToday)
 		endDuration := now.Add(slack).Add(_d).Sub(startOfToday)
 
-		fmt.Printf("%v: startDuration %v, endDuration %v\n", i + 1, startDuration, endDuration)
+		fmt.Printf("%v: startDuration %v, endDuration %v\n", i+1, startDuration, endDuration)
 
 		newSchedule := schedule.Schedule{
 			End:   time.Duration(endDuration),
