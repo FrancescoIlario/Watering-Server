@@ -1,9 +1,9 @@
 package schedule_rest
 
 import (
-	"github.com/filario/watering-server/database"
-	"github.com/filario/watering-server/schedule"
-	"github.com/filario/watering-server/utils"
+	"github.com/FrancescoIlario/Watering-Server/database"
+	"github.com/FrancescoIlario/Watering-Server/schedule"
+	"github.com/FrancescoIlario/Watering-Server/utils"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 	"net/http"
