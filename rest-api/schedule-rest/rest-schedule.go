@@ -3,12 +3,14 @@ package schedule_rest
 import (
 	"github.com/FrancescoIlario/Watering-Server/database"
 	"github.com/FrancescoIlario/Watering-Server/schedule"
+	simple_producer "github.com/FrancescoIlario/Watering-Server/simple-producer"
 	"github.com/FrancescoIlario/Watering-Server/utils"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 	"net/http"
 	"strconv"
 )
+
 
 func Routes() *chi.Mux {
 	router := chi.NewMux()
@@ -28,9 +30,13 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	utils.PanicIf(err) // TODO: handle this
 
 	err = database.Create(&_schedule)
-	utils.PanicIf(err)
+	utils.PanicIf(err) // TODO: handle this
 
 	w.WriteHeader(201)
+
+	body := ""
+	err = simple_producer.Publish(&body)
+	utils.PanicIf(err) // TODO: handle this
 }
 
 func ReadAll(w http.ResponseWriter, rq *http.Request) {
