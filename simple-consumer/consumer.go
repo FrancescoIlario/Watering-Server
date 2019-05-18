@@ -13,12 +13,12 @@ import (
 )
 
 var (
-	uriC          = flag.String("uri", "amqp://guest:guest@localhost:5672/", "AMQP URI")
-	exchangeC     = flag.String("exchange", "watering-exchange", "Durable, non-auto-deleted AMQP exchange name")
-	exchangeTypeC = flag.String("exchange-type", "direct", "Exchange type - direct|fanout|topic|x-custom")
-	queueC        = flag.String("queue", "watering-queue", "Ephemeral AMQP queue name")
-	bindingKeyC   = flag.String("key", "watering-key", "AMQP binding key")
-	consumerTagC  = flag.String("consumer-tag", "watering-consumer", "AMQP consumer tag (should not be blank)")
+	uriC          = flag.String("uriC", "amqp://guest:guest@localhost:5672/", "AMQP URI")
+	exchangeC     = flag.String("exchangeC", "watering-exchange", "Durable, non-auto-deleted AMQP exchange name")
+	exchangeTypeC = flag.String("exchange-typeC", "direct", "Exchange type - direct|fanout|topic|x-custom")
+	queueC        = flag.String("queueC", "watering-queue", "Ephemeral AMQP queue name")
+	bindingKeyC   = flag.String("keyC", "watering-key", "AMQP binding key")
+	consumerTagC  = flag.String("consumer-tagC", "watering-consumer", "AMQP consumer tag (should not be blank)")
 )
 
 func init() {
@@ -156,15 +156,23 @@ func (c *Consumer) Shutdown() error {
 
 func handle(deliveries <-chan amqp.Delivery, done chan error) {
 	for d := range deliveries {
-		log.Printf(
-			"got %dB delivery: [%v] %q",
-			len(d.Body),
-			d.DeliveryTag,
-			d.Body,
-		)
+		processDelivery(&d)
 		_ = d.Ack(false)
 	}
 
 	log.Printf("handle: deliveries channel closed")
 	done <- nil
+}
+
+func processDelivery(delivery *amqp.Delivery) {
+	logDelivery(delivery)
+}
+
+func logDelivery(delivery *amqp.Delivery) {
+	log.Printf(
+		"got %dB delivery: [%v] %q",
+		len(delivery.Body),
+		delivery.DeliveryTag,
+		delivery.Body,
+	)
 }

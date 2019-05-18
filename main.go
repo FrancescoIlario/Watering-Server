@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"github.com/FrancescoIlario/Watering-Server/database"
 	"github.com/FrancescoIlario/Watering-Server/rest-api/schedule-rest"
+	"github.com/FrancescoIlario/Watering-Server/scheduler"
 	simple_consumer "github.com/FrancescoIlario/Watering-Server/simple-consumer"
 	simple_producer "github.com/FrancescoIlario/Watering-Server/simple-producer"
 	"github.com/FrancescoIlario/Watering-Server/utils"
@@ -34,16 +34,23 @@ func Routes() *chi.Mux {
 }
 
 func Echo(w http.ResponseWriter, r *http.Request) {
-	var body []byte
+	message := r.URL.Query().Get("msg")
+	if message == "" {
+		message = "No message to echo"
+	}
 
-	_, err := r.Body.Read(body)
-	utils.PanicIf(err)
+	// var body []byte
+	//
+	// _, err := r.Body.Read(body)
+	// utils.PanicIf(err)
+	//
+	// _, err = w.Write(body)
+	// utils.PanicIf(err)
+	//
+	// bodyString := fmt.Sprintf("%v", body)
+	// err = simple_producer.Publish(&body)
 
-	_, err = w.Write(body)
-	utils.PanicIf(err)
-
-	bodyString := fmt.Sprintf("%v", body)
-	err = simple_producer.Publish(&bodyString)
+	err := simple_producer.Publish(&message)
 	utils.PanicIf(err)
 
 	w.WriteHeader(201)
@@ -69,9 +76,16 @@ func startServer() {
 	log.Fatal(http.ListenAndServe(":9999", router))
 }
 
-func main() {
+func startUp() {
 	database.Initialize()
 
 	go simple_consumer.StartConsumer(0)
+	go scheduler.StartCron()
+
 	startServer()
+}
+
+func main() {
+	startUp()
+
 }
